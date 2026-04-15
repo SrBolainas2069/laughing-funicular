@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>TurnitoArg Pro</title>
+<style>
+body{font-family:Arial;background:#0f172a;color:white;margin:0;padding:20px}
+h1{color:#22c55e}
+.card{background:#1e293b;padding:15px;border-radius:12px;margin-bottom:15px}
+input,button{padding:10px;margin:5px 0;border-radius:8px;border:none}
+input{width:100%}
+button{background:#22c55e;color:black;font-weight:bold;cursor:pointer}
+.partido{background:#334155;padding:10px;border-radius:8px;margin-top:5px}
+</style>
+</head>
+<body>
+
+<h1>⚽ TurnitoArg Pro</h1>
+
+<div class="card">
+<h2>👤 Crear usuario</h2>
+<input id="usuario" placeholder="Nombre">
+<button onclick="crearUsuario()">Guardar usuario</button>
+<p id="userActual"></p>
+</div>
+
+<div class="card">
+<h2>📢 Crear partido</h2>
+<input id="zona" placeholder="Zona">
+<input id="horario" placeholder="Día y horario">
+<button onclick="crearPartido()">Publicar</button>
+</div>
+
+<div class="card">
+<h2>⚽ Partidos</h2>
+<div id="lista"></div>
+</div>
+
+<script>
+let usuario = localStorage.getItem("usuario") || "";
+document.getElementById("userActual").innerText = usuario ? "Usuario: " + usuario : "No logueado";
+
+function crearUsuario(){
+  usuario = document.getElementById("usuario").value;
+  localStorage.setItem("usuario", usuario);
+  location.reload();
+}
+
+function crearPartido(){
+  if(!usuario){ alert("Creá usuario primero"); return; }
+
+  const zona = document.getElementById("zona").value;
+  const horario = document.getElementById("horario").value;
+
+  let partidos = JSON.parse(localStorage.getItem("partidos") || "[]");
+
+  partidos.push({
+    usuario,
+    zona,
+    horario
+  });
+
+  localStorage.setItem("partidos", JSON.stringify(partidos));
+  mostrar();
+}
+
+function mostrar(){
+  let partidos = JSON.parse(localStorage.getItem("partidos") || "[]");
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  partidos.forEach(p=>{
+    const div = document.createElement("div");
+    div.className="partido";
+    div.innerHTML = "👤 "+p.usuario+"<br>📍 "+p.zona+"<br>🕒 "+p.horario;
+    lista.appendChild(div);
+  });
+}
+
+mostrar();
+</script>
+
+</body>
+</html>
